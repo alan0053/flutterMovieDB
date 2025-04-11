@@ -28,4 +28,15 @@ class Movie {
       (data['popularity'] as num?)?.toDouble() ?? 0.0, // int or double
     );
   }
+  // to JSON for rented movies
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'overview': overview,
+      'release_date': releaseDate?.year.toString(),
+      'poster_path': posterPath,
+      'popularity': popularity,
+    };
+  }
 }

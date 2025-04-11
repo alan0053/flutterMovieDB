@@ -4,6 +4,9 @@
     "moviecard",
     "movieprovider",
     "movieresults",
+    "prefs",
+    "rentedmovieprovider",
+    "rentedresults",
     "watchpage",
     "welcomewidget"
   ]

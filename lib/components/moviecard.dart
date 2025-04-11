@@ -3,6 +3,8 @@ import 'package:flutter_movie_db/theme/theme.dart';
 import '../data/movie.dart';
 import 'dart:math';
 import 'package:provider/provider.dart';
+import '../providers/rentedmovieprovider.dart';
+import '../pages/rentedpage.dart';
 
 class MovieCard extends StatelessWidget {
   final Movie movie;
@@ -14,6 +16,7 @@ class MovieCard extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final colorTheme = Theme.of(context).colorScheme;
     final BorderRadius radius = BorderRadius.vertical(top: Radius.circular(16));
+    final rentedProvider = Provider.of<RentedMovieProvider>(context);
 
     // flutter equivalent of react random price.
     Map<String, int> randomPrice() {
@@ -125,22 +128,35 @@ class MovieCard extends StatelessWidget {
                                 ),
                                 TextButton(
                                   onPressed: () {
-                                    // TODO:
+                                    rentedProvider.rentMovie(movie);
+                                    Navigator.of(context).pop();
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (_) =>
+                                              const RentedPage()), // TODO:
+                                    );
 
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
-                                        content: Row(
+                                        // to prevent overflow for all items
+                                        content: Wrap(
+                                          spacing: 8.0,
+                                          runSpacing: 4.0,
+                                          crossAxisAlignment:
+                                              WrapCrossAlignment.center,
                                           children: [
                                             Icon(
                                               Icons.check,
                                               color: colorTheme.ratingHigh,
                                             ),
-                                            const SizedBox(width: 8),
-                                            Text(movie.title,
-                                                style: textTheme.bodyLarge
-                                                    ?.copyWith(
-                                                  color: colorTheme.ratingLow,
-                                                )),
+                                            Text(
+                                              movie.title,
+                                              style:
+                                                  textTheme.bodyLarge?.copyWith(
+                                                color: colorTheme.ratingLow,
+                                              ),
+                                            ),
                                             Text(
                                                 " has been rented successfully."),
                                           ],

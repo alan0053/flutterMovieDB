@@ -4,6 +4,8 @@ import '../data/movie.dart';
 import '../components/search_dialog.dart';
 import '../components/welcomewidget.dart';
 import '../components/movieresults.dart';
+import 'package:provider/provider.dart';
+import '../providers/rentedmovieprovider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -19,7 +21,6 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    // Initially, no search has been performed.
     _moviesFuture = null;
   }
 
@@ -28,6 +29,9 @@ class _HomePageState extends State<HomePage> {
     // Get theme values
     final textTheme = Theme.of(context).textTheme;
     final colorTheme = Theme.of(context).colorScheme;
+
+    final rentedMovieProvider =
+        Provider.of<RentedMovieProvider>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(
@@ -44,20 +48,25 @@ class _HomePageState extends State<HomePage> {
                   );
                 },
               ),
-              Positioned(
-                right: 4,
-                top: 4,
-                child: CircleAvatar(
-                  backgroundColor: colorTheme.error,
-                  radius: 9,
-                  child: Text(
-                    '6',
-                    style: textTheme.bodyLarge?.copyWith(
-                      color: colorTheme.onPrimary,
-                      fontSize: 10,
+              Consumer<RentedMovieProvider>(
+                builder: (context, RentedMovieProvider, child) {
+                  return Positioned(
+                    right: 4,
+                    top: 4,
+                    child: CircleAvatar(
+                      backgroundColor: colorTheme.error,
+                      radius: 9,
+                      child: Text(
+                        '${RentedMovieProvider.rentedMovies.length}',
+                        textAlign: TextAlign.center,
+                        style: textTheme.bodyLarge?.copyWith(
+                          color: colorTheme.onPrimary,
+                          fontSize: 10,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
+                  );
+                },
               ),
             ],
           ),
@@ -89,7 +98,11 @@ class _HomePageState extends State<HomePage> {
                   if (movies.isEmpty) {
                     scaffoldMessenger.showSnackBar(
                       SnackBar(
-                        content: Text("No movies found named $keyword."),
+                        content: Text(
+                          "No movies found named $keyword.",
+                          softWrap: true,
+                          // to prevent long text from overflowing
+                        ),
                         duration: const Duration(seconds: 2),
                       ),
                     );
@@ -98,7 +111,11 @@ class _HomePageState extends State<HomePage> {
                   if (!mounted) return;
                   scaffoldMessenger.showSnackBar(
                     SnackBar(
-                      content: Text("Something went wrong. Error: $error"),
+                      content: Text(
+                        "Something went wrong. Error: $error",
+                        softWrap: true,
+                        overflow: TextOverflow.visible,
+                      ),
                       duration: const Duration(seconds: 2),
                     ),
                   );

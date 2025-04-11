@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../components/rentedresults.dart';
 
 class RentedPage extends StatelessWidget {
   const RentedPage({super.key});
@@ -9,9 +10,7 @@ class RentedPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Rented Movies"),
       ),
-      body: const Center(
-        child: Text("Rented Movies Page"),
-      ),
+      body: RentedMovieResults(),
     );
   }
 }

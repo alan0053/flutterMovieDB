@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'pages/homepage.dart';
 import './providers/movieprovider.dart';
+import './providers/rentedmovieprovider.dart';
 
 void main() {
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => MovieProvider()),
+        ChangeNotifierProvider(create: (_) => RentedMovieProvider()),
       ],
       child: const MyApp(),
     ),
