@@ -3,6 +3,7 @@
     "httphelper",
     "moviecard",
     "movieprovider",
+    "movieresults",
     "watchpage",
     "welcomewidget"
   ]

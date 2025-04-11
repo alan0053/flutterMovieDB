@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import './rentedpage.dart';
-import '../theme/theme.dart';
-import '../providers/movieprovider.dart';
-import '../components/moviecard.dart';
 import '../data/movie.dart';
 import '../components/search_dialog.dart';
 import '../components/welcomewidget.dart';
+import '../components/movieresults.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -69,32 +66,8 @@ class _HomePageState extends State<HomePage> {
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: _moviesFuture != null
-            ? FutureBuilder<List<Movie>>(
-                future: _moviesFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    // The future (promise) is still pending.
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (snapshot.hasError) {
-                    return Center(
-                      child: Text(
-                        "Something went wrong. Please try again. Error: ${snapshot.error}",
-                        style: textTheme.bodyLarge,
-                      ),
-                    );
-                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return WelcomeWidget();
-                  } else {
-                    final movies = snapshot.data!;
-                    // Return ListView with movie cards.
-                    return ListView.builder(
-                      itemCount: movies.length,
-                      itemBuilder: (context, index) {
-                        return MovieCard(movie: movies[index]);
-                      },
-                    );
-                  }
-                },
+            ? MovieResultsWidget(
+                moviesFuture: _moviesFuture,
               )
             : WelcomeWidget(),
       ),
