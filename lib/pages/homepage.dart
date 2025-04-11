@@ -4,6 +4,9 @@ import './rentedpage.dart';
 import '../theme/theme.dart';
 import '../providers/movieprovider.dart';
 import '../components/moviecard.dart';
+import '../data/movie.dart';
+import '../components/search_dialog.dart';
+import '../components/welcomewidget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -13,62 +16,21 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late TextEditingController searchController;
+  Future<List<Movie>>? _moviesFuture; // Future for movie search results
+  var keywordState = "";
 
   @override
   void initState() {
     super.initState();
-    searchController = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    searchController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _dialogBuilder(BuildContext context) {
-    return showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Search Movie'),
-          content: TextField(
-            controller: searchController,
-            autofocus: true,
-            decoration: const InputDecoration(
-              hintText: 'Search',
-              border: OutlineInputBorder(),
-            ),
-            keyboardType: TextInputType.text,
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                final keyword = searchController.text.trim();
-                if (keyword.isNotEmpty) {
-                  Provider.of<MovieProvider>(context, listen: false)
-                      .search(keyword);
-                }
-                Navigator.of(context).pop();
-              },
-              child: const Text('Search'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
-            ),
-          ],
-        );
-      },
-    );
+    // Initially, no search has been performed.
+    _moviesFuture = null;
   }
 
   @override
   Widget build(BuildContext context) {
+    // Get theme values
     final textTheme = Theme.of(context).textTheme;
     final colorTheme = Theme.of(context).colorScheme;
-    final movieProvider = Provider.of<MovieProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -106,29 +68,71 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
-        child: movieProvider.movies.isNotEmpty
-            ? ListView.builder(
-                itemCount: movieProvider.movies.length,
-                itemBuilder: (context, index) {
-                  final movie = movieProvider.movies[index];
-                  return MovieCard(movie: movie);
+        child: _moviesFuture != null
+            ? FutureBuilder<List<Movie>>(
+                future: _moviesFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    // The future (promise) is still pending.
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(
+                      child: Text(
+                        "Something went wrong. Please try again. Error: ${snapshot.error}",
+                        style: textTheme.bodyLarge,
+                      ),
+                    );
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return WelcomeWidget();
+                  } else {
+                    final movies = snapshot.data!;
+                    // Return ListView with movie cards.
+                    return ListView.builder(
+                      itemCount: movies.length,
+                      itemBuilder: (context, index) {
+                        return MovieCard(movie: movies[index]);
+                      },
+                    );
+                  }
                 },
               )
-            : Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("Welcome", style: textTheme.displaySmall),
-                    Text("To The Movie App!", style: textTheme.displaySmall),
-                    const SizedBox(height: 20),
-                    const Text("Use the floating button to search movies"),
-                  ],
-                ),
-              ),
+            : WelcomeWidget(),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _dialogBuilder(context);
+          showDialog(
+            context: context,
+            builder: (_) => SearchDialog(
+              parentContext: context,
+              onSearch: (future, keyword) {
+                // update the movie future and keyword with callback
+                setState(() {
+                  _moviesFuture = future;
+                  keywordState = keyword;
+                });
+                final scaffoldMessenger = ScaffoldMessenger.of(context);
+                future.then((movies) {
+                  if (!mounted) return;
+                  if (movies.isEmpty) {
+                    scaffoldMessenger.showSnackBar(
+                      SnackBar(
+                        content: Text("No movies found named $keyword."),
+                        duration: const Duration(seconds: 2),
+                      ),
+                    );
+                  }
+                }).catchError((error) {
+                  if (!mounted) return;
+                  scaffoldMessenger.showSnackBar(
+                    SnackBar(
+                      content: Text("Something went wrong. Error: $error"),
+                      duration: const Duration(seconds: 2),
+                    ),
+                  );
+                });
+              },
+            ),
+          );
         },
         backgroundColor: colorTheme.primary,
         foregroundColor: colorTheme.onPrimary,

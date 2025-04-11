@@ -25,7 +25,7 @@ class Movie {
           ? DateTime.tryParse(data['release_date'])
           : null,
       data['poster_path'],
-      (data['popularity'] as num?)?.toDouble() ?? 0.0,
+      (data['popularity'] as num?)?.toDouble() ?? 0.0, // int or double
     );
   }
 }

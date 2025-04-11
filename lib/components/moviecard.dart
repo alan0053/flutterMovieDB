@@ -14,7 +14,7 @@ class MovieCard extends StatelessWidget {
     final colorTheme = Theme.of(context).colorScheme;
     final BorderRadius radius = BorderRadius.vertical(top: Radius.circular(16));
 
-// flutter equivalent of react price.
+// flutter equivalent of react random price.
     Map<String, int> randomPrice() {
       final random = Random();
       final dollar = random.nextInt(40) + 1;

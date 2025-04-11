@@ -8,6 +8,8 @@ class MovieProvider with ChangeNotifier {
   List<Movie> _movies = [];
   List<Movie> get movies => _movies;
 
+  int get length => _movies.length;
+
   Future<List<Movie>> search(String keyword) async {
     try {
       _movies = await _httpHelper.searchMovies(keyword);
