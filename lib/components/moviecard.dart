@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_movie_db/theme/theme.dart';
 import '../data/movie.dart';
 import 'dart:math';
+import 'package:provider/provider.dart';
 
 class MovieCard extends StatelessWidget {
   final Movie movie;
@@ -14,7 +15,7 @@ class MovieCard extends StatelessWidget {
     final colorTheme = Theme.of(context).colorScheme;
     final BorderRadius radius = BorderRadius.vertical(top: Radius.circular(16));
 
-// flutter equivalent of react random price.
+    // flutter equivalent of react random price.
     Map<String, int> randomPrice() {
       final random = Random();
       final dollar = random.nextInt(40) + 1;
@@ -105,13 +106,63 @@ class MovieCard extends StatelessWidget {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
-                        // TODO:
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext dialogContext) {
+                            return AlertDialog(
+                              title: const Text("Are you sure ?"),
+                              content: Text(
+                                  "Do you really want to rent this movie ?"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(dialogContext).pop();
+                                  },
+                                  child: const Text("Cancel"),
+                                  style: TextButton.styleFrom(
+                                    foregroundColor: colorTheme.error,
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    // TODO:
+
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.check,
+                                              color: colorTheme.ratingHigh,
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Text(movie.title,
+                                                style: textTheme.bodyLarge
+                                                    ?.copyWith(
+                                                  color: colorTheme.ratingLow,
+                                                )),
+                                            Text(
+                                                " has been rented successfully."),
+                                          ],
+                                        ),
+                                        duration: const Duration(seconds: 2),
+                                      ),
+                                    );
+                                    Navigator.of(dialogContext).pop();
+                                  },
+                                  child: const Text("Confirm"),
+                                ),
+                              ],
+                            );
+                          },
+                        );
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: colorTheme.secondary,
                         foregroundColor: colorTheme.onSecondary,
                       ),
                       child: const Text('Rent'),
+                      //TODO: based on rented or not button will change
                     ),
                   ),
                 ),
