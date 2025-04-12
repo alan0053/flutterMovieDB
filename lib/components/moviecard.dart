@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_movie_db/pages/watchpage.dart';
-import 'package:flutter_movie_db/theme/theme.dart';
+import '../pages/watchpage.dart';
+import '../theme/theme.dart';
 import '../data/movie.dart';
 import 'dart:math';
 import 'package:provider/provider.dart';

@@ -79,7 +79,13 @@ ThemeData darkTheme = ThemeData(
 
 // i decided to add few more colors with extending the color scheme
 extension CustomColors on ColorScheme {
-  Color get ratingLow => Colors.red.shade500;
-  Color get ratingMedium => const Color.fromARGB(255, 206, 189, 45);
-  Color get ratingHigh => Colors.green.shade500;
+  Color get ratingLow => brightness == Brightness.light
+      ? Colors.red.shade500
+      : Colors.red.shade300;
+  Color get ratingMedium => brightness == Brightness.light
+      ? const Color.fromARGB(255, 159, 138, 17)
+      : const Color.fromARGB(255, 214, 192, 49);
+  Color get ratingHigh => brightness == Brightness.light
+      ? Colors.green.shade500
+      : Colors.green.shade300;
 }
