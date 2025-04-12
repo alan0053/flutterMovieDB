@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_movie_db/pages/watchpage.dart';
 import 'package:flutter_movie_db/theme/theme.dart';
 import '../data/movie.dart';
 import 'dart:math';
@@ -8,8 +9,9 @@ import '../pages/rentedpage.dart';
 
 class MovieCard extends StatelessWidget {
   final Movie movie;
+  final bool rented;
 
-  const MovieCard({super.key, required this.movie});
+  const MovieCard({super.key, required this.movie, required this.rented});
 
   @override
   Widget build(BuildContext context) {
@@ -107,81 +109,101 @@ class MovieCard extends StatelessWidget {
                   alignment: Alignment.center,
                   child: SizedBox(
                     width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext dialogContext) {
-                            return AlertDialog(
-                              title: const Text("Are you sure ?"),
-                              content: Text(
-                                  "Do you really want to rent this movie ?"),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(dialogContext).pop();
-                                  },
-                                  child: const Text("Cancel"),
-                                  style: TextButton.styleFrom(
-                                    foregroundColor: colorTheme.error,
-                                  ),
-                                ),
-                                TextButton(
-                                  onPressed: () {
-                                    rentedProvider.rentMovie(movie);
-                                    Navigator.of(context).pop();
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (_) =>
-                                              const RentedPage()), // TODO:
-                                    );
-
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        // to prevent overflow for all items
-                                        content: Wrap(
-                                          spacing: 8.0,
-                                          runSpacing: 4.0,
-                                          crossAxisAlignment:
-                                              WrapCrossAlignment.center,
-                                          children: [
-                                            Icon(
-                                              Icons.check,
-                                              color: colorTheme.ratingHigh,
-                                            ),
-                                            Text(
-                                              movie.title,
-                                              style:
-                                                  textTheme.bodyLarge?.copyWith(
-                                                color: colorTheme.ratingLow,
-                                              ),
-                                            ),
-                                            Text(
-                                                " has been rented successfully."),
-                                          ],
+                    child: !rented
+                        ? ElevatedButton(
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext dialogContext) {
+                                  return AlertDialog(
+                                    title: const Text("Are you sure ?"),
+                                    content: Text(
+                                        "Do you really want to rent this movie ?"),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(dialogContext).pop();
+                                        },
+                                        style: TextButton.styleFrom(
+                                          foregroundColor: colorTheme.error,
                                         ),
-                                        duration: const Duration(seconds: 2),
+                                        child: const Text("Cancel"),
                                       ),
-                                    );
-                                    Navigator.of(dialogContext).pop();
-                                  },
-                                  child: const Text("Confirm"),
+                                      TextButton(
+                                        onPressed: () {
+                                          rentedProvider.rentMovie(movie);
+                                          Navigator.of(context).pop();
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (_) =>
+                                                    const RentedPage()), // TODO:
+                                          );
+
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              // to prevent overflow for all items
+                                              content: Wrap(
+                                                spacing: 8.0,
+                                                runSpacing: 4.0,
+                                                crossAxisAlignment:
+                                                    WrapCrossAlignment.center,
+                                                children: [
+                                                  Icon(
+                                                    Icons.check,
+                                                    color:
+                                                        colorTheme.ratingHigh,
+                                                  ),
+                                                  Text(
+                                                    movie.title,
+                                                    style: textTheme.bodyLarge
+                                                        ?.copyWith(
+                                                      color:
+                                                          colorTheme.ratingLow,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                      " has been rented successfully."),
+                                                ],
+                                              ),
+                                              duration:
+                                                  const Duration(seconds: 2),
+                                            ),
+                                          );
+                                          Navigator.of(dialogContext).pop();
+                                        },
+                                        child: const Text("Confirm"),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: colorTheme.secondary,
+                              foregroundColor: colorTheme.onSecondary,
+                            ),
+                            child: const Text('Rent'),
+                            //TODO: based on rented or not button will change
+                          )
+                        : ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => WatchPage(movie: movie),
                                 ),
-                              ],
-                            );
-                          },
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: colorTheme.secondary,
-                        foregroundColor: colorTheme.onSecondary,
-                      ),
-                      child: const Text('Rent'),
-                      //TODO: based on rented or not button will change
-                    ),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: colorTheme.secondary,
+                              foregroundColor: colorTheme.onSecondary,
+                            ),
+                            child: const Text('Watch'),
+                          ),
                   ),
-                ),
+                )
               ],
             ),
           ),

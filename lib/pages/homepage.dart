@@ -15,7 +15,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Future<List<Movie>>? _moviesFuture; // Future for movie search results
+  Future<List<Movie>>? _moviesFuture;
   var keywordState = "";
 
   @override
@@ -29,9 +29,6 @@ class _HomePageState extends State<HomePage> {
     // Get theme values
     final textTheme = Theme.of(context).textTheme;
     final colorTheme = Theme.of(context).colorScheme;
-
-    final rentedMovieProvider =
-        Provider.of<RentedMovieProvider>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(
@@ -49,7 +46,7 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               Consumer<RentedMovieProvider>(
-                builder: (context, RentedMovieProvider, child) {
+                builder: (context, provider, child) {
                   return Positioned(
                     right: 4,
                     top: 4,
@@ -57,7 +54,7 @@ class _HomePageState extends State<HomePage> {
                       backgroundColor: colorTheme.error,
                       radius: 9,
                       child: Text(
-                        '${RentedMovieProvider.rentedMovies.length}',
+                        '${provider.rentedMovies.length}',
                         textAlign: TextAlign.center,
                         style: textTheme.bodyLarge?.copyWith(
                           color: colorTheme.onPrimary,
@@ -87,7 +84,7 @@ class _HomePageState extends State<HomePage> {
             builder: (_) => SearchDialog(
               parentContext: context,
               onSearch: (future, keyword) {
-                // update the movie future and keyword with callback
+                // update the movie future and keyword
                 setState(() {
                   _moviesFuture = future;
                   keywordState = keyword;
@@ -101,6 +98,7 @@ class _HomePageState extends State<HomePage> {
                         content: Text(
                           "No movies found named $keyword.",
                           softWrap: true,
+
                           // to prevent long text from overflowing
                         ),
                         duration: const Duration(seconds: 2),
@@ -114,7 +112,6 @@ class _HomePageState extends State<HomePage> {
                       content: Text(
                         "Something went wrong. Error: $error",
                         softWrap: true,
-                        overflow: TextOverflow.visible,
                       ),
                       duration: const Duration(seconds: 2),
                     ),

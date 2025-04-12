@@ -36,7 +36,7 @@ class MovieResultsWidget extends StatelessWidget {
           return ListView.builder(
             itemCount: movies.length,
             itemBuilder: (context, index) {
-              return MovieCard(movie: movies[index]);
+              return MovieCard(movie: movies[index], rented: false);
             },
           );
         }

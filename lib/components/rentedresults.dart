@@ -33,7 +33,6 @@ class RentedMovieResults extends StatelessWidget {
             ),
           );
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          // No movies available.
           return Center(
             child: Text(
               "No rented movies :(",
@@ -46,7 +45,7 @@ class RentedMovieResults extends StatelessWidget {
           return ListView.builder(
             itemCount: movies.length,
             itemBuilder: (context, index) {
-              return MovieCard(movie: movies[index]);
+              return MovieCard(movie: movies[index], rented: true);
             },
           );
         }

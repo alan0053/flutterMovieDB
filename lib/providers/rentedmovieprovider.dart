@@ -47,4 +47,11 @@ class RentedMovieProvider with ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('rented_movies');
   }
+
+  // not a best practice i believe for performance , but i didn't spent to much time to for find a better solution
+  Future<void> removeMovieById(movieID) async {
+    _rentedMovies.removeWhere((movie) => movie.id == movieID);
+    notifyListeners();
+    await _saveRentedMovies();
+  }
 }

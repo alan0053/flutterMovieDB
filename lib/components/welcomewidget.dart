@@ -12,7 +12,7 @@ class WelcomeWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text("Welcome", style: textTheme.displaySmall),
-          Text("To The Movie App!", style: textTheme.displaySmall),
+          Text("To Berk's Movie App!", style: textTheme.displaySmall),
           const SizedBox(height: 20),
           const Text("Use the floating button to search movies"),
         ],
