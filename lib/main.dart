@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'pages/homepage.dart';
 import './providers/movieprovider.dart';
 import './providers/rentedmovieprovider.dart';
+import './theme/theme.dart';
 
 void main() {
   runApp(
@@ -23,10 +24,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      // TODO: light / dark theme
+      theme: lightTheme,
+      darkTheme: darkTheme,
       title: 'Movie App',
-      theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple)),
+      themeMode: ThemeMode.system,
       home: const HomePage(),
     );
   }

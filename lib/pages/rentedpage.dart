@@ -32,7 +32,11 @@ class RentedPage extends StatelessWidget {
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
-                        child: Text("Cancel"),
+                        child: Text(
+                          "Cancel",
+                          style: textTheme.bodyMedium
+                              ?.copyWith(color: colorTheme.primary),
+                        ),
                       ),
                       TextButton(
                         onPressed: () {

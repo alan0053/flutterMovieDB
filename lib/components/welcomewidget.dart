@@ -11,10 +11,14 @@ class WelcomeWidget extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("Welcome", style: textTheme.displaySmall),
-          Text("To Berk's Movie App!", style: textTheme.displaySmall),
+          Text("Welcome", style: textTheme.displayLarge),
+          const SizedBox(height: 32),
+          Text("To Berk's Movie App!", style: textTheme.displayMedium),
           const SizedBox(height: 20),
-          const Text("Use the floating button to search movies"),
+          Text(
+            "Use the floating button to search movies",
+            style: textTheme.bodyMedium,
+          ),
         ],
       ),
     );

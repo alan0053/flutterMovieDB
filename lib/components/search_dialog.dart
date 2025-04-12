@@ -44,7 +44,7 @@ class _SearchDialogState extends State<SearchDialog> {
         controller: searchController,
         autofocus: true,
         decoration: const InputDecoration(
-          hintText: 'Search',
+          hintText: 'E.g. Batman',
           border: OutlineInputBorder(),
         ),
         keyboardType: TextInputType.text,
@@ -71,7 +71,10 @@ class _SearchDialogState extends State<SearchDialog> {
             searchController.clear();
             Navigator.of(context).pop();
           },
-          child: const Text('Search'),
+          child: Text('Search',
+              style: textTheme.bodyMedium?.copyWith(
+                color: Theme.of(context).colorScheme.primary,
+              )),
         ),
       ],
     );

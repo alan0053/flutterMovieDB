@@ -137,7 +137,11 @@ class MovieCard extends StatelessWidget {
                                         style: TextButton.styleFrom(
                                           foregroundColor: colorTheme.error,
                                         ),
-                                        child: const Text("Cancel"),
+                                        child: Text(
+                                          "Cancel",
+                                          style: textTheme.bodyMedium?.copyWith(
+                                              color: colorTheme.ratingLow),
+                                        ),
                                       ),
                                       TextButton(
                                         onPressed: () {
@@ -198,7 +202,11 @@ class MovieCard extends StatelessWidget {
                                             );
                                           }
                                         },
-                                        child: const Text("Confirm"),
+                                        child: Text(
+                                          "Confirm",
+                                          style: textTheme.bodyMedium?.copyWith(
+                                              color: colorTheme.primary),
+                                        ),
                                       ),
                                     ],
                                   );

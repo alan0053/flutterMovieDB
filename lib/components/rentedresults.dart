@@ -8,12 +8,14 @@ class RentedMovieResults extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
     return Consumer<RentedMovieProvider>(
       builder: (context, provider, child) {
         final movies = provider.rentedMovies;
         if (movies.isEmpty) {
           return Center(
-            child: Text("No rented movies available."),
+            child: Text("You did not rent any movies",
+                style: textTheme.displaySmall),
           );
         }
         return ListView.builder(
