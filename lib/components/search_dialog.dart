@@ -35,6 +35,8 @@ class _SearchDialogState extends State<SearchDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final colorTheme = Theme.of(context).colorScheme;
     // dialog's context
     return AlertDialog(
       title: const Text('Search Movie'),
@@ -49,6 +51,14 @@ class _SearchDialogState extends State<SearchDialog> {
       ),
       actions: [
         TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              searchController.clear();
+            },
+            child: Text('Cancel',
+                style:
+                    textTheme.bodyMedium?.copyWith(color: colorTheme.error))),
+        TextButton(
           onPressed: () {
             final keyword = searchController.text.trim();
             if (keyword.isNotEmpty) {
@@ -62,13 +72,6 @@ class _SearchDialogState extends State<SearchDialog> {
             Navigator.of(context).pop();
           },
           child: const Text('Search'),
-        ),
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-            searchController.clear();
-          },
-          child: const Text('Cancel'),
         ),
       ],
     );

@@ -12,12 +12,18 @@ class RentedMovieProvider with ChangeNotifier {
     _loadRentedMovies();
   }
 
+  bool idChecker(Movie movie) {
+    return !_rentedMovies.any((item) => item.id == movie.id);
+  }
+
   Future<void> rentMovie(Movie movie) async {
     // prevent renting the same movie again
-    if (!_rentedMovies.any((item) => item.id == movie.id)) {
+    if (idChecker(movie)) {
       _rentedMovies.add(movie);
       notifyListeners();
       await _saveRentedMovies();
+    } else {
+      return;
     }
   }
 

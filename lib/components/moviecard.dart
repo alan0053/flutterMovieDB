@@ -31,6 +31,8 @@ class MovieCard extends StatelessWidget {
       };
     }
 
+    final Map<String, int> price = randomPrice();
+
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 16),
       elevation: 4,
@@ -97,20 +99,28 @@ class MovieCard extends StatelessWidget {
                             : colorTheme.ratingHigh,
                   ),
                 ),
+
                 SizedBox(height: 12),
-                Text(
-                    'Price: \$${randomPrice()['dollar']}.${randomPrice()['cent']}',
-                    style: textTheme.bodyLarge?.copyWith(
-                      color: colorTheme.primary,
-                      fontWeight: FontWeight.bold,
-                    )),
+                !rented // if rented instead of price show overview
+                    ? Text('Price: \$${price['dollar']}.${price['cent']}',
+                        style: textTheme.bodyLarge?.copyWith(
+                          color: colorTheme.primary,
+                          fontWeight: FontWeight.bold,
+                        ))
+                    : Text(movie.overview),
                 SizedBox(height: 12),
                 Align(
                   alignment: Alignment.center,
                   child: SizedBox(
                     width: double.infinity,
                     child: !rented
-                        ? ElevatedButton(
+                        // For Rent
+                        ? ElevatedButton.icon(
+                            icon: Icon(
+                              Icons.paid,
+                              color: colorTheme.onSecondary,
+                              size: 20,
+                            ),
                             onPressed: () {
                               showDialog(
                                 context: context,
@@ -118,7 +128,7 @@ class MovieCard extends StatelessWidget {
                                   return AlertDialog(
                                     title: const Text("Are you sure ?"),
                                     content: Text(
-                                        "Do you really want to rent this movie ?"),
+                                        "Do you really want to rent this movie for \$${price['dollar']}.${price['cent']} ?"),
                                     actions: [
                                       TextButton(
                                         onPressed: () {
@@ -131,47 +141,62 @@ class MovieCard extends StatelessWidget {
                                       ),
                                       TextButton(
                                         onPressed: () {
-                                          rentedProvider.rentMovie(movie);
-                                          Navigator.of(context).pop();
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (_) =>
-                                                    const RentedPage()), // TODO:
-                                          );
-
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            SnackBar(
-                                              // to prevent overflow for all items
-                                              content: Wrap(
-                                                spacing: 8.0,
-                                                runSpacing: 4.0,
-                                                crossAxisAlignment:
-                                                    WrapCrossAlignment.center,
-                                                children: [
-                                                  Icon(
-                                                    Icons.check,
-                                                    color:
-                                                        colorTheme.ratingHigh,
-                                                  ),
-                                                  Text(
-                                                    movie.title,
-                                                    style: textTheme.bodyLarge
-                                                        ?.copyWith(
-                                                      color:
-                                                          colorTheme.ratingLow,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                      " has been rented successfully."),
-                                                ],
+                                          // check if the movie is already rented
+                                          if (!rentedProvider
+                                              .idChecker(movie)) {
+                                            Navigator.of(context).pop();
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                  "I know what you are up to 🙉 .But you can't rent the same movie twice.",
+                                                ),
+                                                duration:
+                                                    const Duration(seconds: 3),
                                               ),
-                                              duration:
-                                                  const Duration(seconds: 2),
-                                            ),
-                                          );
-                                          Navigator.of(dialogContext).pop();
+                                            );
+                                          } else {
+                                            rentedProvider.rentMovie(movie);
+                                            Navigator.of(context).pop();
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (_) =>
+                                                    const RentedPage(),
+                                              ), //
+                                            );
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              SnackBar(
+                                                // to prevent overflow for all items
+                                                content: Wrap(
+                                                  spacing: 8.0,
+                                                  runSpacing: 4.0,
+                                                  crossAxisAlignment:
+                                                      WrapCrossAlignment.center,
+                                                  children: [
+                                                    Icon(
+                                                      Icons.check,
+                                                      color:
+                                                          colorTheme.ratingHigh,
+                                                    ),
+                                                    Text(
+                                                      movie.title,
+                                                      style: textTheme.bodyLarge
+                                                          ?.copyWith(
+                                                        color: colorTheme
+                                                            .ratingLow,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                        " has been rented successfully."),
+                                                  ],
+                                                ),
+                                                duration:
+                                                    const Duration(seconds: 2),
+                                              ),
+                                            );
+                                          }
                                         },
                                         child: const Text("Confirm"),
                                       ),
@@ -184,10 +209,19 @@ class MovieCard extends StatelessWidget {
                               backgroundColor: colorTheme.secondary,
                               foregroundColor: colorTheme.onSecondary,
                             ),
-                            child: const Text('Rent'),
-                            //TODO: based on rented or not button will change
+                            label: Text('Rent',
+                                style: textTheme.bodyLarge?.copyWith(
+                                  color: colorTheme.onSecondary,
+                                )),
+                            // For watch
                           )
-                        : ElevatedButton(
+                        : ElevatedButton.icon(
+                            icon: Icon(Icons.play_circle_filled,
+                                color: colorTheme.onSecondary, size: 20),
+                            label: Text('Watch',
+                                style: textTheme.bodyLarge?.copyWith(
+                                  color: colorTheme.onSecondary,
+                                )),
                             onPressed: () {
                               Navigator.push(
                                 context,
@@ -200,7 +234,6 @@ class MovieCard extends StatelessWidget {
                               backgroundColor: colorTheme.secondary,
                               foregroundColor: colorTheme.onSecondary,
                             ),
-                            child: const Text('Watch'),
                           ),
                   ),
                 )
