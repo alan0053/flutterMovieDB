@@ -33,16 +33,19 @@ class RentedMovieProvider with ChangeNotifier {
     List<String> jsonMovie =
         _rentedMovies.map((movie) => jsonEncode(movie.toJson())).toList();
     await prefs.setStringList('rented_movies', jsonMovie);
+    print(jsonMovie);
   }
 
   Future<void> _loadRentedMovies() async {
     final prefs = await SharedPreferences.getInstance();
     List<String>? jsonMovie = prefs.getStringList('rented_movies');
+    print(jsonMovie);
     if (jsonMovie != null) {
       _rentedMovies = jsonMovie
           .map((json) =>
               Movie.fromJson(jsonDecode(json) as Map<String, dynamic>))
           .toList();
+      print(_rentedMovies);
       notifyListeners();
     }
   }

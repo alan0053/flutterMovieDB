@@ -34,7 +34,7 @@ class Movie {
       'id': id,
       'title': title,
       'overview': overview,
-      'release_date': releaseDate?.year.toString(),
+      'release_date': releaseDate?.toString(),
       'poster_path': posterPath,
       'popularity': popularity,
     };
