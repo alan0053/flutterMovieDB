@@ -20,19 +20,6 @@ class MovieCard extends StatelessWidget {
     final BorderRadius radius = BorderRadius.vertical(top: Radius.circular(16));
     final rentedProvider = Provider.of<RentedMovieProvider>(context);
 
-    // flutter equivalent of react random price.
-    Map<String, int> randomPrice() {
-      final random = Random();
-      final dollar = random.nextInt(40) + 1;
-      final cent = random.nextInt(100) + 1;
-      return {
-        'dollar': dollar,
-        'cent': cent,
-      };
-    }
-
-    final Map<String, int> price = randomPrice();
-
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 16),
       elevation: 4,
@@ -102,7 +89,7 @@ class MovieCard extends StatelessWidget {
 
                 SizedBox(height: 12),
                 !rented // if rented instead of price show overview
-                    ? Text('Price: \$${price['dollar']}.${price['cent']}',
+                    ? Text('Price: \$${movie.priceDollar}.${movie.priceCent}',
                         style: textTheme.bodyLarge?.copyWith(
                           color: colorTheme.primary,
                           fontWeight: FontWeight.bold,
@@ -128,7 +115,7 @@ class MovieCard extends StatelessWidget {
                                   return AlertDialog(
                                     title: const Text("Are you sure ?"),
                                     content: Text(
-                                        "Do you really want to rent this movie for \$${price['dollar']}.${price['cent']} ?"),
+                                        "Do you really want to rent this movie for \$${movie.priceDollar}.${movie.priceCent} ?"),
                                     actions: [
                                       TextButton(
                                         onPressed: () {
