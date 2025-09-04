@@ -4,7 +4,7 @@ import 'movie.dart';
 
 class HttpHelper {
   final String domain = 'api.themoviedb.org';
-  final String apiKey = 'f8abbb15bd47c3b5ea6705be83313d83';
+  final String apiKey = 'Key';
   final String path = '/3/search/movie';
 
   Future<List<Movie>> searchMovies(String keyword) async {
